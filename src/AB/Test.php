@@ -21,6 +21,16 @@ class Test extends AbstractABTest
         }
     }
 
+    public function hasStoredVariation()
+    {
+
+    }
+
+    public function getStoredVariation()
+    {
+
+    }
+
     public function trigger($callback)
     {
         $this->trigger = $callback;
@@ -34,6 +44,11 @@ class Test extends AbstractABTest
     public function evalTrigger()
     {
         return (bool) call_user_func($this->trigger);
+    }
+
+    public function hasVariations()
+    {
+        return (bool) count($this->variations);
     }
 
     public function addDefaultVariation($callback)
@@ -80,7 +95,7 @@ class Test extends AbstractABTest
     {
 
         if ( $this->hasStoredVariation() ) {
-            $selected = $this->getVariation( $this->storedVariation() );
+            $selected = $this->getVariation( $this->getStoredVariation() );
         } else {
 
             if ( $this->hasVariations() && $this->hasTrigger() && $this->evalTrigger() ) {
