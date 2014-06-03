@@ -1,0 +1,17 @@
+{
+    "name": "ash/abtest",
+    "description": "Simple AB Test package for PhœnixCorp",
+    "require": {
+        "monolog/monolog": "*"
+    },
+    "autoload": {
+        "psr-4": {"AB\\": "src/AB"}
+    },
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Laurent Goussard",
+            "email": "laurent.goussard@prelinker.com"
+        }
+    ]
+}
