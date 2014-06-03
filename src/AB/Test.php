@@ -45,7 +45,7 @@ class Test extends AbstractABTest
 
     public function getDefaultVariation()
     {
-        $this->defaultVariation = $this->defaultVariation ?: $this->addDefaultVariation(function(){});
+        $this->defaultVariation = $this->defaultVariation ?: $this->addDefaultVariation(function () {});
 
         return $this->defaultVariation;
     }
@@ -72,6 +72,7 @@ class Test extends AbstractABTest
         foreach ($this->variations as $variation) {
             $variations = array_merge($variations, array_fill(0, $variation->getWeight(), $variation));
         }
+
         return $variations[array_rand($variations)];
     }
 
@@ -87,9 +88,7 @@ class Test extends AbstractABTest
 
             if ( $this->hasVariations() && $this->hasTrigger() && $this->evalTrigger() ) {
                 $selected = $this->pickVariation();
-            }
-            else
-            {
+            } else {
                 $selected = $this->getDefaultVariation();
             }
 

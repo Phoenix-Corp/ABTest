@@ -16,7 +16,7 @@ abstract class AbstractABTest
         $translit = \Transliterator::create('Any-Latin; NFD; [:Nonspacing Mark:] Remove; NFC; [:Punctuation:] Remove; Lower();');
         $this->shortname = preg_replace('/\s/', '-', $translit->transliterate($this->name));
     }
-    
+
     public function getShortName()
     {
         return $this->shortname;
