@@ -52,7 +52,7 @@ class Test extends AbstractABTest
 
     public function addVariation($name, $callback)
     {
-        $variation = (new Variation($name, $callback));
+        $variation = new Variation($name, $callback);
         array_push($this->variations, $variation);
         $this->namedVariations[$name] = max(array_keys($this->variations));
 
@@ -80,10 +80,7 @@ class Test extends AbstractABTest
     {
 
         if ( $this->hasStoredVariation() ) {
-
-            // Stored Variation
-            // $selected = $this->getVariation( $this->storedVariation() );
-
+            $selected = $this->getVariation( $this->storedVariation() );
         } else {
 
             if ( $this->hasVariations() && $this->hasTrigger() && $this->evalTrigger() ) {
@@ -91,7 +88,6 @@ class Test extends AbstractABTest
             } else {
                 $selected = $this->getDefaultVariation();
             }
-
         }
 
         return call_user_func($selected);
