@@ -2,7 +2,7 @@
     "name": "ash/abtest",
     "description": "Simple AB Test package for PhœnixCorp",
     "require": {
-        "monolog/monolog": "*"
+        "monolog/monolog": "1.*"
     },
     "autoload": {
         "psr-4": {"AB\\": "src/AB"}
