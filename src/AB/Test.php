@@ -4,7 +4,7 @@ namespace AB;
 /**
 * ABTest Controller
 */
-class Test extends AbstractABTest
+class Test extends AbstractTest
 {
 
     private $trigger;
@@ -23,17 +23,21 @@ class Test extends AbstractABTest
 
     public function hasStoredVariation()
     {
-
+        return array_key_exists($this->getHash(), $_COOKIE);
     }
 
     public function getStoredVariation()
     {
-
+        if ( $this->hasStoredVariation() ) {
+            return $this->getVariation( $_COOKIE[$this->getHash()] );
+        }
     }
 
     public function trigger($callback)
     {
         $this->trigger = $callback;
+
+        return $this;
     }
 
     public function hasTrigger()
@@ -95,7 +99,7 @@ class Test extends AbstractABTest
     {
 
         if ( $this->hasStoredVariation() ) {
-            $selected = $this->getVariation( $this->getStoredVariation() );
+            $selected = $this->getStoredVariation();
         } else {
 
             if ( $this->hasVariations() && $this->hasTrigger() && $this->evalTrigger() ) {
@@ -104,6 +108,8 @@ class Test extends AbstractABTest
                 $selected = $this->getDefaultVariation();
             }
         }
+
+        setcookie($this->getHash(), $selected->getShortName(), time()+60*60*24*30, '/');
 
         return call_user_func($selected);
 

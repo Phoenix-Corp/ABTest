@@ -4,7 +4,7 @@ namespace AB;
 /**
 * ABTest Variation
 */
-class Variation extends AbstractABTest
+class Variation extends AbstractVariation
 {
     private $weight = 1;
     private $callback;

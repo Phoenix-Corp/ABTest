@@ -2,9 +2,9 @@
 namespace AB;
 
 /**
-* ABTest Abstract class
+* Slug Abstract class
 */
-abstract class AbstractABTest
+abstract class AbstractSlug
 {
     private $name;
     private $shortname;
@@ -15,6 +15,11 @@ abstract class AbstractABTest
 
         $translit = \Transliterator::create('Any-Latin; NFD; [:Nonspacing Mark:] Remove; NFC; [:Punctuation:] Remove; Lower();');
         $this->shortname = preg_replace('/\s/', '-', $translit->transliterate($this->name));
+    }
+
+    public function getHash($limit = 11)
+    {
+        return substr(sprintf('AB_%s', md5($this->getShortName())), 0, $limit);
     }
 
     public function getShortName()
