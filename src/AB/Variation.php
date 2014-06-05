@@ -11,6 +11,7 @@ class Variation extends AbstractVariation
 
     public function __construct($name, $callback)
     {
+        parent::__construct($name);
         $this->callback = $callback;
     }
 
