@@ -7,111 +7,132 @@ namespace AB;
 class Test extends AbstractTest
 {
 
-    private $trigger;
-    private $variations = array();
-    private $namedVariations = array();
-    private $defaultVariation;
+    private $callbacks = array();
+    private $variants = array();
+    private $namedVariants = array();
+    private $defaultVariant;
+    private $selected;
 
     public function __construct($name, $default_callback = false)
     {
         parent::__construct($name);
 
         if ($default_callback) {
-            $this->addDefaultVariation($default_callback);
+            $this->addDefaultVariant($default_callback);
         }
     }
 
-    public function hasStoredVariation()
+    public function hasStoredVariant()
     {
         return array_key_exists($this->getHash(), $_COOKIE);
     }
 
-    public function getStoredVariation()
+    public function getStoredVariant()
     {
-        if ( $this->hasStoredVariation() ) {
-            return $this->getVariation( $_COOKIE[$this->getHash()] );
+        if ( $this->hasStoredVariant() ) {
+            return $this->getVariant( $_COOKIE[$this->getHash()] );
         }
     }
 
-    public function trigger($callback)
+    public function setTrigger($callback)
     {
-        $this->trigger = $callback;
+        $this->callbacks['trigger'] = $callback;
 
         return $this;
     }
 
     public function hasTrigger()
     {
-        return (bool) $this->trigger;
+        return array_key_exists('trigger', $this->callbacks);
     }
 
     public function evalTrigger()
     {
-        return (bool) call_user_func($this->trigger);
+        return (bool) call_user_func($this->callbacks['trigger']);
     }
 
-    public function hasVariations()
+    public function hasVariants()
     {
-        return (bool) count($this->variations);
+        return (bool) count($this->variants);
     }
 
-    public function addDefaultVariation($callback)
+    public function addDefaultVariant($callback)
     {
-        $this->defaultVariation = $this->addVariation('default', $callback);
+        $this->defaultVariant = $this->addVariant('default', $callback);
 
-        return $this->defaultVariation;
+        return $this->defaultVariant;
     }
 
-    public function getDefaultVariation()
+    public function getDefaultVariant()
     {
-        $this->defaultVariation = $this->defaultVariation ?: $this->addDefaultVariation(function () {});
+        $this->defaultVariant = $this->defaultVariant ?: $this->addDefaultVariant(function () {});
 
-        return $this->defaultVariation;
+        return $this->defaultVariant;
     }
 
-    public function addVariation($name, $callback)
+    public function addVariant($name, $callback)
     {
-        $variation = new Variation($name, $callback);
-        array_push($this->variations, $variation);
-        $this->namedVariations[$name] = max(array_keys($this->variations));
+        $variant = new Variant($name, $callback);
+        array_push($this->variants, $variant);
+        $this->namedVariants[$name] = max(array_keys($this->variants));
 
-        return $variation;
+        return $variant;
     }
 
-    public function getVariation($name)
+    public function getVariant($name)
     {
-        if ( array_key_exists($name, $this->namedVariations) ) {
-            return $this->variations[$this->namedVariations[$name]];
+        if ( array_key_exists($name, $this->namedVariants) ) {
+            return $this->variants[$this->namedVariants[$name]];
         }
     }
 
-    public function pickVariation()
+    public function pickVariant()
     {
-        $variations = array();
-        foreach ($this->variations as $variation) {
-            $variations = array_merge($variations, array_fill(0, $variation->getWeight(), $variation));
+        $variants = array();
+        foreach ($this->variants as $variant) {
+            $variants = array_merge($variants, array_fill(0, $variant->getWeight(), $variant));
         }
 
-        return $variations[array_rand($variations)];
+        return $variants[array_rand($variants)];
+    }
+    
+    private function setSelectedVariant($variant)
+    {
+        return $this->selected = $variant;
+    }
+    
+    public function getSelectedVariant()
+    {
+        return $this->selected;
+    }
+    
+    public function setReport($callback)
+    {
+        $this->callbacks['report'] = $callback;
+        
+        return $this;
     }
 
     public function proceed()
     {
 
-        if ( $this->hasStoredVariation() ) {
-            $selected = $this->getStoredVariation();
+        if ( $this->hasStoredVariant() ) {
+            $this->setSelectedVariant( $this->getStoredVariant() );
         } else {
-
-            if ( $this->hasVariations() && $this->hasTrigger() && $this->evalTrigger() ) {
-                $selected = $this->pickVariation();
+            if ( $this->hasVariants() && $this->hasTrigger() && $this->evalTrigger() ) {
+                $this->setSelectedVariant( $this->pickVariant() );
             } else {
-                $selected = $this->getDefaultVariation();
+                $this->setSelectedVariant( $this->getDefaultVariant() );
             }
         }
 
-        setcookie($this->getHash(), $selected->getShortName(), time()+60*60*24*30, '/');
+        setcookie($this->getHash(), $this->getSelectedVariant()->getShortName(), time()+60*60*24*30, '/');
+        
+        if ( array_key_exists('report', $this->callbacks) ) {
+            call_user_func($this->callbacks['report'], $this);
+        }
 
-        return call_user_func($selected);
+        return call_user_func( $this->getSelectedVariant() );
 
     }
 
