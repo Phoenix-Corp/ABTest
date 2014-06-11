@@ -11,6 +11,7 @@ abstract class AbstractSlug
 
     public function __construct($name)
     {
+
         $this->name = trim($name);
 
         $translit = \Transliterator::create('Any-Latin; NFD; [:Nonspacing Mark:] Remove; NFC; [:Punctuation:] Remove; Lower();');
@@ -19,7 +20,7 @@ abstract class AbstractSlug
 
     public function getHash($limit = 11)
     {
-        return substr(sprintf('AB_%s', md5($this->getShortName())), 0, $limit);
+        return substr(sprintf('%s_%s', __NAMESPACE__, md5($this->getShortName())), 0, $limit);
     }
 
     public function getShortName()

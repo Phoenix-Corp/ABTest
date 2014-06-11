@@ -1,6 +1,6 @@
 {
     "name": "ash/abtest",
-    "description": "Simple AB Test package for PhœnixCorp",
+    "description": "Simple AB Test package for/from PhœnixCorp",
     "require": {
         "monolog/monolog": "1.*"
     },

@@ -95,21 +95,21 @@ class Test extends AbstractTest
 
         return $variants[array_rand($variants)];
     }
-    
+
     private function setSelectedVariant($variant)
     {
         return $this->selected = $variant;
     }
-    
+
     public function getSelectedVariant()
     {
         return $this->selected;
     }
-    
+
     public function setReport($callback)
     {
         $this->callbacks['report'] = $callback;
-        
+
         return $this;
     }
 
@@ -127,7 +127,7 @@ class Test extends AbstractTest
         }
 
         setcookie($this->getHash(), $this->getSelectedVariant()->getShortName(), time()+60*60*24*30, '/');
-        
+
         if ( array_key_exists('report', $this->callbacks) ) {
             call_user_func($this->callbacks['report'], $this);
         }
