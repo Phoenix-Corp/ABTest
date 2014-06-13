@@ -121,12 +121,11 @@ class Test extends AbstractTest
         } else {
             if ( $this->hasVariants() && $this->hasTrigger() && $this->evalTrigger() ) {
                 $this->setSelectedVariant( $this->pickVariant() );
+                setcookie($this->getHash(), $this->getSelectedVariant()->getShortName(), time()+60*60*24*30, '/');
             } else {
                 $this->setSelectedVariant( $this->getDefaultVariant() );
             }
         }
-
-        setcookie($this->getHash(), $this->getSelectedVariant()->getShortName(), time()+60*60*24*30, '/');
 
         if ( array_key_exists('report', $this->callbacks) ) {
             call_user_func($this->callbacks['report'], $this);
