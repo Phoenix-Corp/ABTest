@@ -84,7 +84,9 @@ class Test extends AbstractTest
     {
         $variant = new Variant($name, $callback);
         array_push($this->variants, $variant);
-        $this->namedVariants[$name] = max(array_keys($this->variants));
+        $key = max(array_keys($this->variants));
+        $this->namedVariants[$name] = $key;
+        $this->namedVariants[$variant->getShortName()] = $key;
 
         return $variant;
     }
