@@ -12,6 +12,7 @@ class Test extends AbstractTest
     private $namedVariants = array();
     private $defaultVariant;
     private $selected;
+    private $fire;
 
     public function __construct($name, $default_callback = false)
     {
@@ -49,6 +50,15 @@ class Test extends AbstractTest
     public function evalTrigger()
     {
         return (bool) call_user_func($this->callbacks['trigger']);
+    }
+
+    public function shouldFire()
+    {
+        if ($this->fire === null) {
+            $this->fire = ($this->hasVariants() && $this->hasTrigger() && $this->evalTrigger());
+        }
+
+        return $this->fire;
     }
 
     public function hasVariants()
@@ -119,7 +129,7 @@ class Test extends AbstractTest
         if ( $this->hasStoredVariant() ) {
             $this->setSelectedVariant( $this->getStoredVariant() );
         } else {
-            if ( $this->hasVariants() && $this->hasTrigger() && $this->evalTrigger() ) {
+            if ( $this->shouldFire() ) {
                 $this->setSelectedVariant( $this->pickVariant() );
                 setcookie($this->getHash(), $this->getSelectedVariant()->getShortName(), time()+60*60*24*30, '/');
             } else {
