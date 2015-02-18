@@ -2,8 +2,8 @@
 namespace AB;
 
 /**
-* ABTest Variation
-*/
+ * ABTest Variation.
+ */
 class Variant extends AbstractVariant
 {
     private $weight = 1;

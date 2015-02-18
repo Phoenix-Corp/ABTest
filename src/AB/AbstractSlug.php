@@ -2,8 +2,8 @@
 namespace AB;
 
 /**
-* Slug Abstract class
-*/
+ * Slug Abstract class.
+ */
 abstract class AbstractSlug
 {
     private $name;
@@ -11,7 +11,6 @@ abstract class AbstractSlug
 
     public function __construct($name)
     {
-
         $this->name = trim($name);
 
         $translit = \Transliterator::create('Any-Latin; NFD; [:Nonspacing Mark:] Remove; NFC; [:Punctuation:] Remove; Lower();');
@@ -32,5 +31,4 @@ abstract class AbstractSlug
     {
         return $this->name;
     }
-
 }

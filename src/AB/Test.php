@@ -2,14 +2,13 @@
 namespace AB;
 
 /**
-* ABTest Controller
-*/
+ * ABTest Controller.
+ */
 class Test extends AbstractTest
 {
-
-    private $callbacks = array();
-    private $variants = array();
-    private $namedVariants = array();
+    private $callbacks = [];
+    private $variants = [];
+    private $namedVariants = [];
     private $defaultVariant;
     private $selected;
     private $fire;
@@ -30,8 +29,8 @@ class Test extends AbstractTest
 
     public function getStoredVariant()
     {
-        if ( $this->hasStoredVariant() ) {
-            return $this->getVariant( $_COOKIE[$this->getHash()] );
+        if ($this->hasStoredVariant()) {
+            return $this->getVariant($_COOKIE[$this->getHash()]);
         }
     }
 
@@ -93,14 +92,14 @@ class Test extends AbstractTest
 
     public function getVariant($name)
     {
-        if ( array_key_exists($name, $this->namedVariants) ) {
+        if (array_key_exists($name, $this->namedVariants)) {
             return $this->variants[$this->namedVariants[$name]];
         }
     }
 
     public function pickVariant()
     {
-        $variants = array();
+        $variants = [];
         foreach ($this->variants as $variant) {
             $variants = array_merge($variants, array_fill(0, $variant->getWeight(), $variant));
         }
@@ -127,29 +126,26 @@ class Test extends AbstractTest
 
     public function proceed()
     {
-
-        if ( $this->hasStoredVariant() ) {
-            $this->setSelectedVariant( $this->getStoredVariant() );
+        if ($this->hasStoredVariant()) {
+            $this->setSelectedVariant($this->getStoredVariant());
         } else {
-            if ( $this->shouldFire() ) {
-                $this->setSelectedVariant( $this->pickVariant() );
+            if ($this->shouldFire()) {
+                $this->setSelectedVariant($this->pickVariant());
                 setcookie($this->getHash(), $this->getSelectedVariant()->getShortName(), time()+60*60*24*30, '/');
             } else {
-                $this->setSelectedVariant( $this->getDefaultVariant() );
+                $this->setSelectedVariant($this->getDefaultVariant());
             }
         }
 
-        if ( array_key_exists('report', $this->callbacks) ) {
+        if (array_key_exists('report', $this->callbacks)) {
             call_user_func($this->callbacks['report'], $this);
         }
 
-        return call_user_func( $this->getSelectedVariant() );
-
+        return call_user_func($this->getSelectedVariant());
     }
 
     public function __toString()
     {
         return (string) $this->proceed();
     }
-
 }

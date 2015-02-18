@@ -2,8 +2,8 @@
 namespace AB;
 
 /**
-* ABTest Abstract class
-*/
+ * ABTest Abstract class.
+ */
 abstract class AbstractTest extends AbstractSlug
 {
 }
